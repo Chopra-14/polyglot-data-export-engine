@@ -2,6 +2,8 @@
 
 ## Project Overview
 
+A high-performance streaming data export system capable of exporting **10 million PostgreSQL records** into multiple formats (CSV, JSON, XML, Parquet) with optional gzip compression and performance benchmarking.
+
 The **Polyglot Data Export Engine** is a high-performance backend service designed to stream extremely large datasets from PostgreSQL into multiple data formats efficiently.
 
 The system supports exporting **10 million rows** while maintaining **constant low memory usage** through streaming techniques. This ensures the application does not load the entire dataset into memory, making it suitable for large-scale data pipelines and reporting systems.
@@ -112,70 +114,57 @@ metadata	JSONB
 
 The database is automatically seeded with 10,000,000 records.
 
-## API Documentation
-# 1️⃣ Create Export Job
-Endpoint
-POST /exports
-Request Body
-{
- "format":"csv",
- "compression":"gzip"
-}
-Response
-{
- "exportId":"uuid",
- "status":"pending"
-}
-# 2️⃣ Download Export
-Endpoint
-GET /exports/{exportId}/download
+## Example API Usage
 
-This endpoint streams the exported dataset.
+### Create Export Job
+
+POST /exports
+
+Request Body:
+
+{
+  "format": "csv",
+  "compression": "gzip"
+}
+
+Response:
+
+{
+  "exportId": "9df330e3-a475-48c4-aa7a-2699f3ea42b5",
+  "status": "pending"
+}
+
+---
+
+### Download Export
+
+GET /exports/{exportId}/download
 
 Example:
 
-GET /exports/1234-uuid/download
-# 3️⃣ Benchmark Export Performance
-Endpoint
+GET /exports/9df330e3-a475-48c4-aa7a-2699f3ea42b5/download
+
+This will stream the exported dataset.
+
+---
+
+### Run Benchmark
+
 GET /exports/benchmark
-Example Response
+
+Example Response:
+
 {
- "datasetRowCount":10000000,
- "results":[
-  {
-   "format":"csv",
-   "durationSeconds":20,
-   "fileSizeBytes":400000000,
-   "peakMemoryMB":120
-  }
- ]
+  "datasetRowCount": 10000000,
+  "results": [
+    {
+      "format": "csv",
+      "durationSeconds": 20,
+      "fileSizeBytes": 118000000,
+      "peakMemoryMB": 120
+    }
+  ]
 }
-Supported Export Formats
-CSV
-
-Standard tabular format
-
-Metadata stored as JSON string
-
-JSON
-
-Full JSON array
-
-Nested metadata preserved
-
-XML
-
-Hierarchical format
-
-Metadata serialized as nested XML
-
-Parquet
-
-Columnar storage format
-
-Highly efficient for analytics workloads
-
-Compression Support
 
 # The system supports gzip compression for text-based formats:
 
